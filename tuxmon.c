@@ -535,6 +535,7 @@ static int calculate_diff(struct sample *low, struct sample *high, double second
                     current->n_tran += new->n_tran;
                     current->n_tranabt += new->n_tranabt;
                     current->n_trancmt += new->n_trancmt;
+                    current->reqc += new->reqc;
                     current->n++;
                 } else {
                     outex++;
@@ -730,7 +731,7 @@ int main(int argc, char *argv[])
         row = queue_row;
         attron(A_REVERSE);
         move(row, 0); hline(' ', 80);
-        mvprintw(row++, 0, "MSQID     MSGS    %%FULL                  FROM       TO");
+        mvprintw(row++, 0, "MSQID      MSGS    %%FULL                  FROM       TO");
         attroff(A_REVERSE);
 
         for (idx = 0, out_rows = 0; idx < h->n_queues; idx++) {
@@ -756,7 +757,7 @@ int main(int argc, char *argv[])
                 sender[0] = '\0';
             }
 
-            mvprintw(row, 0, "%-9ld  % 3ld  % 6.2f%%  %+20s %s %-20s",
+            mvprintw(row, 0, "%-10ld  % 3ld  % 6.2f%%  %+20s %s %-20s",
                     h->queues[idx].msgid, 
                     h->queues[idx].qnum, 
                     h->queues[idx].used * 100.0,
@@ -774,9 +775,9 @@ int main(int argc, char *argv[])
         attron(A_REVERSE);
         move(row, 0); hline(' ', 80);
         if (aggregate_stats) {
-            mvprintw(row++, 0, "COUNT      RQID       SERVICE/S      REQ/S      TRX/S  SERVER");
+            mvprintw(row++, 0, "COUNT      RQID        SERVICE/S      REQ/S      TRX/S  SERVER");
         } else {
-            mvprintw(row++, 0, "PID        RQID       SERVICE/S      REQ/S      TRX/S  SERVER");
+            mvprintw(row++, 0, "PID        RQID        SERVICE/S      REQ/S      TRX/S  SERVER");
         }
         attroff(A_REVERSE);
 
@@ -793,7 +794,7 @@ int main(int argc, char *argv[])
                 snprintf(first_col, sizeof(first_col), "(%ld)",  server_stats[idx].server->pid);
             }
 
-            mvprintw(row, 0, "%-9s  %-9ld  % 9.2f  % 9.2f  % 9.2f  %-28s",
+            mvprintw(row, 0, "%-9s  %-10ld  % 9.2f  % 9.2f  % 9.2f  %-28s",
                     first_col,
                     server_stats[idx].server->rqid,
                     server_stats[idx].reqc,
